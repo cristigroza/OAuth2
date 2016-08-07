@@ -18,15 +18,48 @@ namespace TripGallery.MVCClient.Helpers
         {
             HttpClient client = new HttpClient();
 
-            var accesToken = RequestAccessTokenClientCredentials();
+            var accessToken = RequestAccessTokenAuthorizationCode();
+            if (accessToken != null)
+            {
+                client.SetBearerToken(accessToken);
+            }
+
+            // client credentials flow
+            //var accessToken = RequestAccessTokenClientCredentials();
+            //client.SetBearerToken(accessToken);
+
             client.BaseAddress = new Uri(Constants.TripGalleryAPI);
-            client.SetBearerToken(accesToken);
 
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
+        }
+
+        private static string RequestAccessTokenAuthorizationCode()
+        {
+            // did we store the token before?
+            var cookie = HttpContext.Current.Request.Cookies.Get("TripGalleryCookie");
+            if (cookie != null && cookie["access_token"] != null)
+            {
+                return cookie["access_token"];
+            }
+
+            // no token found - request one
+
+            // we'll pass through the URI we want to return to as state
+            var state = HttpContext.Current.Request.Url.OriginalString;
+
+            var authorizeRequest = new IdentityModel.Client.AuthorizeRequest(
+                TripGallery.Constants.TripGallerySTSAuthorizationEndpoint);
+
+            var url = authorizeRequest.CreateAuthorizeUrl("tripgalleryauthcode", "code", "gallerymanagement",
+                TripGallery.Constants.TripGalleryMVCSTSCallback, state);
+
+            HttpContext.Current.Response.Redirect(url);
+
+            return null;
         }
 
         private static string RequestAccessTokenClientCredentials()
