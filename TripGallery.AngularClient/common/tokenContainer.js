@@ -25,19 +25,20 @@
                     // flow: resource owner password credentials.
                     // => we show the login screen
 
-//                    window.location.href = "#/login";
+                    window.location.href = "#/login";
 
                     // get the token, using the implicit flow.
+//
+//                    var url =
+//                        "https://localhost:44317/identity/connect/authorize?" +
+//                        "client_id=tripgalleryimplicit&" +
+//                        "redirect_uri=" + encodeURI( window.location.protocol + "//" + window.location.host + "/callback.html") + "&" +
+//                        "response_type=token&" +
+//                        "scope=gallerymanagement";
+//
+//                    //// redirect to the STS
+//                    window.location = url;
 
-                    var url =
-                        "https://localhost:44317/identity/connect/authorize?" +
-                        "client_id=tripgalleryimplicit&" +
-                        "redirect_uri=" + encodeURI( window.location.protocol + "//" + window.location.host + "/callback.html") + "&" +
-                        "response_type=token&" +
-                        "scope=gallerymanagement";
-
-                    //// redirect to the STS
-                    window.location = url;
                 }
                 else {
                     // set the token in localstorage

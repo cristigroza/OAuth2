@@ -18,3 +18,4 @@
 /// <reference path="../app/trips/tripCreateController.js" />
 /// <reference path="../app/trips/tripIndexController.js" />
 /// <reference path="../common/tokenContainer.js" />
+/// <reference path="../app/login/loginController.js" />

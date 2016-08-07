@@ -6,6 +6,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityServer3.Core.Configuration;
+using IdentityServer3.Core.Services;
+using IdentityServer3.Core.Services.Default;
 using TripCompany.IdentityServer.Config;
 
 namespace TripCompany.IdentityServer
@@ -16,10 +18,13 @@ namespace TripCompany.IdentityServer
         { 
             app.Map("/identity", idsrvApp =>
             {
+                var corsPolicyService = new DefaultCorsPolicyService {AllowAll = true};
                 var idServerServiceFactory = new IdentityServerServiceFactory()
                                 .UseInMemoryClients(Clients.Get())
                                 .UseInMemoryScopes(Scopes.Get())
                                 .UseInMemoryUsers(Users.Get());
+                idServerServiceFactory.CorsPolicyService  = new Registration<ICorsPolicyService>(corsPolicyService);
+
                 var options = new IdentityServerOptions
                 {
                     Factory = idServerServiceFactory,

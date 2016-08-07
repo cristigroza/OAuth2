@@ -29,6 +29,10 @@
                 templateUrl: "/app/trips/tripAlbum.html",
                 controller: "tripAlbumController as vm"
             })
+            .when("/login", {
+                templateUrl: "/app/login/login.html",
+                controller: "loginController as vm"
+            })
            .otherwise({ redirectTo: "/trips" });
 
 
