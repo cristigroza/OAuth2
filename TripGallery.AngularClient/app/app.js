@@ -3,12 +3,12 @@
 
     var app = angular.module("tripGallery",
                             ["ngRoute", "common.services"]);
-     
-     
 
-    app.config(function ($routeProvider) {
- 
-        $routeProvider            
+
+
+    app.config(function ($routeProvider, $httpProvider) {
+
+        $routeProvider
             .when("/trips", {
                 templateUrl: "/app/trips/tripIndex.html",
                 controller: "tripIndexController as vm"
@@ -26,11 +26,29 @@
                 controller: "pictureCreateController as vm"
             })
             .when("/trips/:tripId/createalbum", {
-                 templateUrl: "/app/trips/tripAlbum.html",
-                 controller: "tripAlbumController as vm"
-             })
+                templateUrl: "/app/trips/tripAlbum.html",
+                controller: "tripAlbumController as vm"
+            })
            .otherwise({ redirectTo: "/trips" });
-       
+
+
+        $httpProvider.interceptors.push(function (appSettings, tokenContainer) {
+            return {
+                'request': function (config) {
+
+                    // if it's a request to the API, we need to provide the
+                    // access token as bearer token.             
+                    if (config.url.indexOf(appSettings.tripGalleryAPI) === 0) {
+                        config.headers.Authorization = 'Bearer ' + tokenContainer.getToken().token;
+                    }
+
+                    return config;
+                }
+
+            };
+        });
+
+
     });
 
 
@@ -40,12 +58,12 @@
     app.directive('fileModel', ['$parse', function ($parse) {
         return {
             restrict: 'A',
-            link: function(scope, element, attrs) {
+            link: function (scope, element, attrs) {
                 var model = $parse(attrs.fileModel);
                 var modelSetter = model.assign;
-            
-                element.bind('change', function(){
-                    scope.$apply(function(){
+
+                element.bind('change', function () {
+                    scope.$apply(function () {
                         modelSetter(scope, element[0].files[0]);
                     });
                 });

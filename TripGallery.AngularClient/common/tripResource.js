@@ -6,17 +6,12 @@
         .factory("tripResource",
                 ["$resource",
                  "appSettings",
-                 "tokenContainer",
                     tripResource])
 
-    function tripResource($resource, appSettings, tokenContainer) {
+    function tripResource($resource, appSettings) {
         return $resource(appSettings.tripGalleryAPI + "/api/trips/:tripId", null,
             {
-                'query': {
-                    isArray: true,
-                    headers: { 'Authorization': 'Bearer ' + tokenContainer.getToken().token }
-                },
-                'patch':
+               'patch':
                     {
                         method: 'PATCH',
                         transformRequest: createJsonPatchDocument
